@@ -34,7 +34,8 @@ public class Utils {
 	public static final String FILE_SEPERATOR = File.separator;
 	public static final String CONFIG_INI = "config.ini";
 	public static final String WORKING_DIR = System.getProperty("user.dir");
-	public static final String HTTP_TYPE = "1.0";
+	public static final String HTTP_TYPE_1_0 = "1.0";
+	public static final String HTTP_TYPE_1_1 = "1.1";
 
 
 	public static String readFile(String file) throws ServerException{

@@ -7,6 +7,7 @@ public class HTTPRequestHandler implements Runnable {
 	private final Configuration configuration;
 	private final Socket connection;
 	private  HTTPRequest request;
+	private HTTPResponse response;
 
 	public HTTPRequestHandler(Socket connection, Configuration configuration)  {
 		this.configuration = configuration;
@@ -25,13 +26,13 @@ public class HTTPRequestHandler implements Runnable {
 			this.request = new HTTPRequest(bufferContent);
 
 			//Generate an http response
-			HTTPResponse response = generateResponse();
+			generateResponse();
 
 			//Send the response to client.
-			Utils.writeOutputStream(this.connection.getOutputStream(), response.toString());
+			Utils.writeOutputStream(this.connection.getOutputStream(), this.response.toString());
 			
 			if (shouldAttachFile()) {
-				Utils.writeOutputStream(this.connection.getOutputStream(), response.fileContent);
+				Utils.writeOutputStream(this.connection.getOutputStream(), this.response.fileContent);
 			}
 
 		} catch (IOException e) {
@@ -41,7 +42,7 @@ public class HTTPRequestHandler implements Runnable {
 		}
 
 		//Check if persistent or not. and handle it. 
-		if (shouldClose()) {
+		if (this.response.shouldCloseConnection()) {
 			try {
 				this.connection.close();
 			
@@ -57,19 +58,32 @@ public class HTTPRequestHandler implements Runnable {
 				this.request.type == HTTPRequestType.GET;
 	}
 
+	private void generateResponse() throws IOException, ServerException {
+		
+		switch (this.request.type) {
+		case GET:
+		case HEAD: {
+			handleGetHead();
+		}
+		case POST: {
+			handlePost();
+		}
+		case TRACE: {
+			handleTrace();
+			break;
+		}
+		case NOT_SUPPORTED:
+			throw new ServerException(HTTPResponseCode.NOT_IMPLEMENTEED);
+		}
+	}
 
-	private boolean shouldClose() {
-		return true;
+	private void handleTrace() {
+		// TODO Auto-generated method stub
+		
 	}
 
 
-	private HTTPResponse generateResponse() throws IOException, ServerException {
-		
-		if (this.request.type == HTTPRequestType.NOT_SUPPORTED) {
-			throw new ServerException(HTTPResponseCode.NOT_IMPLEMENTEED);
-		}
-		
-		
+	private void handleGetHead() throws ServerException {
 		String relativePath = this.request.path.equals("") ? this.configuration.defaultPage : this.request.path;
 		String fullPath = this.configuration.getFullPathForFile(relativePath);
 		
@@ -81,32 +95,18 @@ public class HTTPRequestHandler implements Runnable {
 			throw new ServerException(HTTPResponseCode.INTERNAL_ERROR);
 		}
 		
-
-		HTTPResponse response = new HTTPResponse(HTTPResponseCode.OK);
-		//response.addHeader("connection", "closed");
-
-
-		FileType contentType = FileType.getTypeForFile(fullPath);
+		this.response = new HTTPResponse(HTTPResponseCode.OK, this.request.version);
 		
+		FileType contentType = FileType.getTypeForFile(fullPath);
 		byte[] fileContent = contentType.isImage() ? Utils.readImageFile(fullPath) :
 			Utils.readFile(fullPath).getBytes();
 
-		response.addHeader("content-length", Integer.toString(fileContent.length));
-		response.addHeader("content-type", contentType.toString());
-		response.attachFileContent(fileContent);
-
-		return response;
-	}
-
-	private void handleTrace() {
-		// TODO Auto-generated method stub
+		this.response.addHeader("content-length", Integer.toString(fileContent.length));
+		this.response.addHeader("content-type", contentType.toString());
+		this.response.attachFileContent(fileContent);
 		
-	}
-
-
-	private void handleHead() {
-		// TODO Auto-generated method stub
-		
+		String connectionString = response.shouldCloseConnection() ? "closed" : "keep-alive";
+		this.response.addHeader("connection", connectionString);
 	}
 
 
@@ -115,16 +115,9 @@ public class HTTPRequestHandler implements Runnable {
 		
 	}
 
-
-	private void handleGet() {
-		// TODO Auto-generated method stub
-		System.out.println("generate get reponse");
-		
-	}
-
-
 	private void generateErrorResponse(HTTPResponseCode code) {
-		HTTPResponse response = new HTTPResponse(code);
+		System.out.println("generating error response with code: " + code);
+		this.response = new HTTPResponse(code, this.request.version);
 		
 		if (this.configuration.isErrorFileExists(code)) {
 			String errorFile = this.configuration.errorPages.get(code);
@@ -139,18 +132,18 @@ public class HTTPRequestHandler implements Runnable {
 			}
 			
 			FileType type = FileType.getTypeForFile(errorFile);
-			response.addHeader("content-length", Integer.toString(fileContent.length()));
-			response.addHeader("content-type", type.toString());
-			response.attachFileContent(fileContent.getBytes());
+			this.response.addHeader("content-length", Integer.toString(fileContent.length()));
+			this.response.addHeader("content-type", type.toString());
+			this.response.attachFileContent(fileContent.getBytes());
 		}
 		
-		String connectionString = shouldClose() ? "closed" : "keep-alive";
-		response.addHeader("connection", connectionString);
+		String connectionString = this.response.shouldCloseConnection() ? "closed" : "keep-alive";
+		this.response.addHeader("connection", connectionString);
 		
 		try {
 			Utils.writeOutputStream(this.connection.getOutputStream(), response.toString());
 			
-			if (response.fileContent != null) {
+			if (this.response.fileContent != null) {
 				Utils.writeOutputStream(this.connection.getOutputStream(), response.fileContent);
 			}
 		} catch (ServerException | IOException e) {

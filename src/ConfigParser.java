@@ -8,7 +8,6 @@ public class ConfigParser {
 	private final String fileName;
 	
 	public ConfigParser(String fileName) {
-		System.out.println(fileName);
 		this.fileName = fileName;
 	}
 	

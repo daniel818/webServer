@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 
 public class HTTPRequest {
 
-	static boolean shoudThrowError = true;
 	public HTTPRequestType type;
 	public String path;
 	public String version;
@@ -44,11 +43,6 @@ public class HTTPRequest {
 				throw new ServerException(HTTPResponseCode.BAD_REQUEST); 
 			} 
 			this.headers.put(matcher.group(1), matcher.group(2));
-		}
-		
-		if (shoudThrowError) {
-			shoudThrowError = false;
-			this.type = HTTPRequestType.NOT_SUPPORTED;
 		}
 	}
 }
