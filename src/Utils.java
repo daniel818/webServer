@@ -31,10 +31,24 @@ public class Utils {
 
 	//Constants Symbols/Tokens
 	public static final String CRLF = "\r\n";
+	
+	//Configuration and file constants
 	public static final String FILE_SEPERATOR = File.separator;
 	public static final String CONFIG_INI = "config.ini";
 	public static final String WORKING_DIR = System.getProperty("user.dir");
-	public static final String HTTP_TYPE = "1.0";
+	
+	//HTTP protocol constants
+	public static final String HTTP_TYPE_1_0 = "1.0";
+	public static final String HTTP_TYPE_1_1 = "1.1";
+	
+	public static final String HTTP_CONNECTION_KEY = "connection";
+	public static final String HTTP_CONNECTION_CLOSE = "closed";
+	public static final String HTTP_CONNECTION_KEEP_ALIVE = "keep-alive";
+	
+	public static final String HTTP_CONTENT_LENGTH_KEY = "content-length";
+	public static final String HTTP_CONTENT_TYPE_KEY = "content-type";
+	
+	public static final String HTTP_CONTENT_MESSAGE_TYPE = "message/http";
 
 
 	public static String readFile(String file) throws ServerException{

@@ -4,15 +4,16 @@ import java.util.regex.Pattern;
 
 
 public class HTTPRequest {
-
-	static boolean shoudThrowError = true;
+	
+	public final String originRequest;
 	public HTTPRequestType type;
 	public String path;
 	public String version;
 	private HashMap<String, String> headers;
 
 	public HTTPRequest(String request)  throws ServerException{
-		this.headers = new HashMap<>();
+		originRequest = request;
+		headers = new HashMap<>();
 		parseRequest(request);
 	}
 
@@ -45,11 +46,15 @@ public class HTTPRequest {
 			} 
 			this.headers.put(matcher.group(1), matcher.group(2));
 		}
-		
-		if (shoudThrowError) {
-			shoudThrowError = false;
-			this.type = HTTPRequestType.NOT_SUPPORTED;
-		}
 	}
+	
+	public boolean shouldCloseConnection() {
+		String connectionValue = this.headers.get(Utils.HTTP_CONNECTION_KEY);
+		if (this.version.equals(Utils.HTTP_TYPE_1_0)) {
+			return !Utils.HTTP_CONNECTION_KEEP_ALIVE.equals(connectionValue);
+		} else {
+			return Utils.HTTP_CONNECTION_CLOSE.equals(connectionValue);
+		}
+	} 
 }
 

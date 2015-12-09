@@ -37,7 +37,6 @@ public class Configuration {
 		}
 		
 		for (String errorFile : this.errorPages.values()) {
-			System.out.println(errorFile);
 			if (!Utils.isValidFile(getFullPathForFile(errorFile))) {
 				return false;
 			}
