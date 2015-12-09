@@ -10,7 +10,7 @@ public class HTTPResponse {
 	
 	public HTTPResponse(HTTPResponseCode code, String version) {
 		this.code = code;
-		this.version = Utils.HTTP_TYPE_1_0;
+		this.version = version;
 		this.headears = new HashMap<>();
 		this.fileContent = null;;
 	}
@@ -35,11 +35,8 @@ public class HTTPResponse {
 		}
 		
 		builder.append(Utils.CRLF);
-		
 		return builder.toString();
 	}
 	
-	public boolean shouldCloseConnection() {
-		return this.version.equals(Utils.HTTP_TYPE_1_0);
-	}
+
 }
