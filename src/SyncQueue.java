@@ -15,7 +15,7 @@ public class SyncQueue {
     //Checks if Queue is full.
     public boolean queueIsFull(){
     	
-    	if (this.runnablesQueue.size() == this.queueSize){
+    	if (this.runnablesQueue.size() == this.queueSize) {
     		return true;
     	}
 		return false;	
