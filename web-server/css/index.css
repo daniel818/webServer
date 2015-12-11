@@ -1,0 +1,59 @@
+body {
+	background-color: #eee;
+}
+
+.navbar {
+	margin-bottom: 0;
+}
+
+
+.moving-title-container {
+	background-color: #eee;
+	color: #5cb85c;
+}
+
+.title-container {
+	background-color: White;
+}
+
+.name-title {
+	color: #337ab7;
+}
+
+
+.images-container {
+	margin-top: 2%;
+	text-align: center;
+}
+
+.images-container .row img {
+	width: 18%;
+	height: 18%;
+}
+
+hr {
+	border-color: #555;
+}
+
+.form-container {
+	margin-top: 1%;
+	padding-top: 1%;
+	padding-bottom: 1%;
+	background-color: White;
+}
+
+.message-container {
+	text-align: center;
+}
+
+.message-label {
+	vertical-align: middle;
+}
+
+.last-image-container {
+	margin-top: 2%;
+}
+
+#lastImage {
+	width: 100%;
+}
