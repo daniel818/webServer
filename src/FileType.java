@@ -21,8 +21,7 @@ public enum  FileType
 	}
 
 	public static FileType getTypeForFile(String file) {
-		int indexOfLastPoint = file.lastIndexOf('.');
-		String extension = file.substring(indexOfLastPoint + 1);
+		String extension = getExtension(file);
 		
 		switch (extension) {
 		case "txt":
@@ -89,4 +88,11 @@ public enum  FileType
 		}
 		
 	}
+	
+	public static String getExtension(String file) {
+		int indexOfLastPoint = file.lastIndexOf('.');
+		return file.substring(indexOfLastPoint + 1);
+	}
+		
+	
 }

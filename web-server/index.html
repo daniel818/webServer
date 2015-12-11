@@ -7,5 +7,87 @@
 	    <link href="css/index.css" rel="stylesheet">
 </head>
 <body>
+	<!-- Navbar -->
+	<nav class="navbar navbar-inverse">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+	      <a class="navbar-brand" href="#">
+	      	Web-Server
+	      </a>
+	    </div>
+	    <ul class="nav navbar-nav">
+	    	<li><a href="#">Last Image</a></li>
+	    	<li><a href="#">Last Form</a></li>
+	    	<li><a href="#">Course Website</a></li>
+	    	<li><a href="#">Favorite Website</a></li>
+	    </ul>
+	  </div>
+	</nav>
+
+	<!-- Moving title -->
+	<div class="container-fluid">
+		<div class="row moving-title-container">
+			<marquee direction="right"><h4>Computer networks 2015/2016: Ex. #3</h4></marquee>
+		</div>
+	</div>
+
+	<!-- Name title -->
+	<div class="container-fluid">
+		<div class="row title-container">
+			<h3 class="text-center name-title">Asaf Ben David &amp; Daniel Abutbul</h3>
+		</div>
+	</div>
+
+	<!-- Images -->
+	<div class="container images-container">
+		<div class="row">
+				<img src="img/blue.jpeg" alt="..." class="img-thumbnail">
+				<img src="img/black.jpg" alt="..." class="img-thumbnail">
+				<img src="img/red.jpeg" alt="..." class="img-thumbnail">
+				<img src="img/orange.jpg" alt="..." class="img-thumbnail">
+				<img src="img/green.jpg" alt="..." class="img-thumbnail">
+		</div>
+		<hr>
+	</div>
+
+
+	<!-- Form -->
+	<div class="container form-container">
+		<form class="form">
+			 <div class="form-group message-container">
+			 	<label for="message" class="col-sm-1 control-label"><h4>Message</h4></label>
+			    <div class="col-sm-11">
+			      <textarea class="form-control" rows="3" id="message"></textarea>
+			    </div>
+			 </div>
+			 <div class="form-group">
+			    <div class="col-sm-offset-1 col-sm-11">
+			      <div class="checkbox">
+			        <label>
+			          <input type="checkbox"> Check me out
+			        </label>
+			      </div>
+			    </div>
+			  </div>
+			  <div class="form-group">
+			    <div class="col-sm-offset-1 col-sm-11">
+			      <button type="submit" class="btn btn-default">Submit</button>
+			    </div>
+  			</div>
+		</form>
+		<hr>
+	</div>
+
+	<!-- Last Image  -->
+	<div class="container last-image-container">
+		<div class="row">
+			<div class="center-block">
+				<img src="img/friendlies.jpeg" alt="..." class="img-thumbnail img-responsive center-block" id="lastImage">
+			</div>
+		</div>
+	</div>
+
+	
+
 </body>
 </html>

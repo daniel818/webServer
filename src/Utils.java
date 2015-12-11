@@ -33,6 +33,9 @@ public class Utils {
 	//Constants Symbols/Tokens
 	public static final String CRLF = "\r\n";
 	
+	
+	
+	///saasas
 	//Configuration and file constants
 	public static final String FILE_SEPERATOR = File.separator;
 	public static final String CONFIG_INI = "config.ini";
@@ -80,7 +83,7 @@ public class Utils {
 		try {
 			originalImage = ImageIO.read(new File(file));
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ImageIO.write( originalImage, "jpg", baos );
+			ImageIO.write( originalImage, FileType.getExtension(file),  baos );
 			baos.flush();
 			byte[] imageInByte = baos.toByteArray();
 			baos.close();
