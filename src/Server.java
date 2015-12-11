@@ -1,7 +1,8 @@
 
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Executor;
+//import java.util.concurrent.ExecutorService;
+//import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 
 public class Server {
@@ -26,8 +27,9 @@ public class Server {
 		}			
 		
 		//Create and start the handlers pool.
-		ExecutorService executor = Executors.newFixedThreadPool(configuration.maxThreads);
-			
+		//Executor executor = Executors.newFixedThreadPool(configuration.maxThreads);
+		Executor executor = new ThreadPool(configuration.maxThreads); 
+		
 		//Create the Listener and start Listen to requests.
 		HTTPListener listener = new HTTPListener(configuration, executor);
 		

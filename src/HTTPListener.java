@@ -1,16 +1,17 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
+//import java.util.concurrent.ExecutorService;
 
 
 
 public class HTTPListener {
 
-	private final ExecutorService executor;
+	private final Executor executor;
 	private final Configuration configuration;
 
-	public HTTPListener(Configuration configuration, ExecutorService executor) {
+	public HTTPListener(Configuration configuration, Executor executor) {
 		this.executor = executor;
 		this.configuration = configuration;
 	}
@@ -32,8 +33,7 @@ public class HTTPListener {
 			Socket connection = socket.accept();
 
 			// Construct an object to process the HTTP request message.
-			HTTPRequestHandler requestHandler = 
-					new HTTPRequestHandler(connection, configuration);
+			HTTPRequestHandler requestHandler = new HTTPRequestHandler(connection, configuration);
 			
 			System.out.println("Submiting new request");
 			this.executor.execute(requestHandler);
