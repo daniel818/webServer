@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -128,6 +129,25 @@ public class Utils {
 		} catch (IOException e) {
 			throw new ServerException(HTTPResponseCode.INTERNAL_ERROR);
 		}
+	}
+	
+	public static void writeOutputStreamChunked(OutputStream out, String FilePath) throws ServerException {
+		File f = new File(FilePath);
+		
+		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
+		BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader(f));
+			char[] chunk = new char[24];
+			while(reader.read(chunk) != -1){
+				writer.write(chunk);
+				writer.flush();
+			}
+			
+		} catch (IOException e) {
+			throw new ServerException(HTTPResponseCode.INTERNAL_ERROR);
+		}
+
 	}
 
 	public static boolean isValidFile(String filePath) {
