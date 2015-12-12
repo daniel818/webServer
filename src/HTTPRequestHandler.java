@@ -29,13 +29,11 @@ public class HTTPRequestHandler implements Runnable {
 			//Generate an http response
 			generateResponse();
 			
-<<<<<<< HEAD
-			
-=======
+
 			if (this.response == null) {
 				throw new ServerException(HTTPResponseCode.INTERNAL_ERROR);
 			}
->>>>>>> origin/master
+
 
 			//Send the response to client.
 			Utils.writeOutputStream(this.connection.getOutputStream(), this.response.toString());
@@ -126,16 +124,15 @@ public class HTTPRequestHandler implements Runnable {
 		}
 		
 
-<<<<<<< HEAD
 		if (!request.isChunked()){
 			response.addHeader(Utils.HTTP_CONTENT_LENGTH_KEY, Integer.toString(fileContent.length));
 		}else{
 			response.addHeader(Utils.HTTP_TRANSFER_ENCODING, "chunked");	
 		}
-=======
+
 		int contentLength = fileContent.length + response.getAttachedObject().length();
 		response.addHeader(Utils.HTTP_CONTENT_LENGTH_KEY, Integer.toString(contentLength));
->>>>>>> origin/master
+
 		response.addHeader(Utils.HTTP_CONTENT_TYPE_KEY, contentType.toString());
 		response.attachFileContent(fileContent);
 		
@@ -148,13 +145,12 @@ public class HTTPRequestHandler implements Runnable {
 	}
 
 
-<<<<<<< HEAD
+
 	private void handlePost() {
 		// TODO Auto-generated method stub
 
 	}
-=======
->>>>>>> origin/master
+
 
 	private void generateErrorResponse(HTTPResponseCode code) {
 		String version = getConnectionVersion();
@@ -211,9 +207,7 @@ public class HTTPRequestHandler implements Runnable {
 		return configuration.getFullPathForFile(request.path.isEmpty() ? configuration.defaultPage 
 				: request.path);
 	}
-<<<<<<< HEAD
 
-=======
 	
 	private HashMap<String, String> getBodyObject()  {
 		return HTTPRequest.getParamsFromString(request.body);
@@ -226,6 +220,5 @@ public class HTTPRequestHandler implements Runnable {
 	private boolean shouldAttachObject() {
 		return response != null && response.attachedObject != null;
 	}
->>>>>>> origin/master
 }
 

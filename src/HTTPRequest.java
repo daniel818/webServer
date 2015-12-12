@@ -115,7 +115,6 @@ System.out.println(this.path);
 		}
 	} 
 	
-<<<<<<< HEAD
 	public boolean isChunked(){
 		
 		if (this.headers.containsKey("chunked")){
@@ -124,7 +123,8 @@ System.out.println(this.path);
 			}
 		}
 		return false;
-=======
+	}
+
 	public static HashMap<String, String> getParamsFromString(String str) {
 		HashMap<String, String> params = new HashMap<>();
 		String[] paramsParts = str.split("&");
@@ -138,7 +138,7 @@ System.out.println(this.path);
 		}
 		
 		return params;
->>>>>>> origin/master
+
 	}
 }
 
