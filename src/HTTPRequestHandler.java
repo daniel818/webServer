@@ -28,7 +28,7 @@ public class HTTPRequestHandler implements Runnable {
 			//Generate an http response
 			generateResponse();
 			
-
+			
 			if (this.response == null) {
 				throw new ServerException(HTTPResponseCode.INTERNAL_ERROR);
 			}
@@ -36,6 +36,7 @@ public class HTTPRequestHandler implements Runnable {
 
 			//Send the response to client.
 			Utils.writeOutputStream(this.connection.getOutputStream(), this.response.toString());
+			
 
 			if (shouldAttachFile()) {
 				writeAttachedFile();
@@ -131,6 +132,8 @@ public class HTTPRequestHandler implements Runnable {
 
 		String connectionString = getConnectionHeaderValue();
 		response.addHeader(Utils.HTTP_CONNECTION_KEY, connectionString);
+		
+		
 	}
 
 

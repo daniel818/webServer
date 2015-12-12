@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 public class HTTPRequest {
 	
-	public static final boolean ENABLE_TEST_CHUNK = true;
+	public static final boolean ENABLE_TEST_CHUNK = false;
 	
 	public final String originRequest;
 	public HTTPRequestType type;
@@ -35,7 +35,7 @@ public class HTTPRequest {
 			this.type = HTTPRequestType.convertFromString(matcher.group(1));
 			this.path = matcher.group(2);
 			this.version = matcher.group(3);
-System.out.println(this.path);
+
 		} else  {
 			throw new ServerException(HTTPResponseCode.BAD_REQUEST);
 		}
@@ -99,8 +99,6 @@ System.out.println(this.path);
 		
 		try {
 			if (Integer.parseInt(contentLength) != body.length()) {
-				System.out.println(String.format("content-length:%s, body length: %s",
-						Integer.parseInt(contentLength), body.length()));
 				throw new ServerException(HTTPResponseCode.BAD_REQUEST);
 			}
 		} catch (NumberFormatException e) {

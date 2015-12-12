@@ -35,7 +35,6 @@ public class HTTPListener {
 			// Construct an object to process the HTTP request message.
 			HTTPRequestHandler requestHandler = new HTTPRequestHandler(connection, configuration);
 			
-			System.out.println("Submiting new request");
 			this.executor.execute(requestHandler);
 		}
 	}

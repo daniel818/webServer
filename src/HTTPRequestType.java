@@ -5,8 +5,6 @@ public enum HTTPRequestType {
 		
 		public static HTTPRequestType convertFromString(String str) {
 			
-			System.out.println(str);
-			
 			switch (str.toUpperCase()) {
 			case "GET":
 				return GET;
