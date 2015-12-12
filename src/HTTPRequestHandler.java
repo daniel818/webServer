@@ -43,7 +43,7 @@ public class HTTPRequestHandler implements Runnable {
 			}
 			
 			if (shouldAttachObject()) {
-				Utils.writeOutputStream(this.connection.getOutputStream(), this.response.getAttachedObject());
+				writeAttachedObject();
 			}
 			
 
@@ -54,7 +54,7 @@ public class HTTPRequestHandler implements Runnable {
 		} finally {		
 			if (this.connection != null) {
 				try {
-					this.connection.close();
+					closeConnectionSafe();
 
 				} catch (IOException e) {
 					System.out.println("Could not close socket.");
@@ -62,7 +62,6 @@ public class HTTPRequestHandler implements Runnable {
 			}
 		}
 	}
-
 
 	private void generateResponse() throws IOException, ServerException {
 
@@ -132,20 +131,11 @@ public class HTTPRequestHandler implements Runnable {
 		response.addHeader(Utils.HTTP_CONTENT_TYPE_KEY, contentType.toString());
 		response.attachFileContent(fileContent);
 		
-		
-		
-		
 
 		String connectionString = getConnectionHeaderValue();
 		response.addHeader(Utils.HTTP_CONNECTION_KEY, connectionString);
 	}
 
-
-
-	private void handlePost() {
-		// TODO Auto-generated method stub
-
-	}
 
 
 	private void generateErrorResponse(HTTPResponseCode code) {
@@ -224,5 +214,24 @@ public class HTTPRequestHandler implements Runnable {
 			Utils.writeOutputStream(this.connection.getOutputStream(), this.response.fileContent);
 		}
 	}
+	
+	private void writeAttachedObject() throws ServerException, IOException {
+		if (request.isChunked()){
+			Utils.writeOutputStreamChunked(this.connection.getOutputStream(),
+					this.response.getAttachedObject().getBytes());
+		}else{
+			Utils.writeOutputStream(this.connection.getOutputStream(), this.response.getAttachedObject());
+		}
+	}
+	
+	private void closeConnectionSafe() throws IOException {
+		if (request.isChunked()) {
+			String lastChunkedLine = String.format("%s%s", Integer.toHexString(0), Utils.CRLF);
+			this.connection.getOutputStream().write(lastChunkedLine.getBytes());
+		}
+		
+		this.connection.close();
+	}
+
 }
 

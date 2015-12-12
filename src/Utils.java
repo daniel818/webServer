@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -147,14 +146,18 @@ public class Utils {
 		}
 	}
 	
-	public static void writeOutputStreamChunked(OutputStream out, byte[] FileContent) throws ServerException {
+	public static  void writeOutputStreamChunked(OutputStream out, byte[] FileContent) throws ServerException {
 		
 		try {
 			
 			int startChunk = 0;
-			while (startChunk <=  FileContent.length) {
+			while (startChunk <  FileContent.length) {
 				int length = startChunk + CHUNKED_SIZE <= FileContent.length ? 
 						CHUNKED_SIZE : FileContent.length - startChunk;
+				if (length == 0) {
+					break;
+				}
+				
 				String firstLine = String.format("%s%s", Integer.toHexString(length), CRLF);
 				out.write(firstLine.getBytes());
 				out.write(FileContent, startChunk, length);
@@ -163,13 +166,10 @@ public class Utils {
 				startChunk += length;
 			}
 			
-			out.close();
-			
 			
 		} catch (IOException e) {
 			throw new ServerException(HTTPResponseCode.INTERNAL_ERROR);
-		}
-
+		} 
 	}
 	public static boolean isValidFile(String filePath) {
 		File file = new File(filePath);
