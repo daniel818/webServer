@@ -45,8 +45,8 @@
 			var isChecked = jsonObject["isChecked"] === undefined ? "off" : jsonObject["isChecked"];
 			var message = jsonObject["message"] === undefined ? "" : jsonObject["message"];
 
-			$("#message").text(message);
-			$("#isChecked").text(isChecked);
+			$("#message").html(message.replace("+", "&nbsp;"));
+			$("#isChecked").html(isChecked);
 
 		})
 
