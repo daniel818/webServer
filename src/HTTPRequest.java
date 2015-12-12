@@ -32,7 +32,7 @@ public class HTTPRequest {
 			this.type = HTTPRequestType.convertFromString(matcher.group(1));
 			this.path = matcher.group(2);
 			this.version = matcher.group(3);
-
+System.out.println(this.path);
 		} else  {
 			throw new ServerException(HTTPResponseCode.BAD_REQUEST);
 		}
@@ -59,6 +59,10 @@ public class HTTPRequest {
 		
 		if (this.type == HTTPRequestType.GET || this.type == HTTPRequestType.HEAD) {
 			parseURLParams();
+		}
+		if(this.path.equals("index.html")){
+			this.headers.put("chunked", "yes");
+			System.out.println("fuck");
 		}
 	}
 	
@@ -111,6 +115,16 @@ public class HTTPRequest {
 		}
 	} 
 	
+	public boolean isChunked(){
+		
+		if (this.headers.containsKey("chunked")){
+			if (this.headers.get("chunked").equals("yes")) {
+				return true;	
+			}
+		}
+		return false;
+	}
+
 	public static HashMap<String, String> getParamsFromString(String str) {
 		HashMap<String, String> params = new HashMap<>();
 		String[] paramsParts = str.split("&");
@@ -124,6 +138,7 @@ public class HTTPRequest {
 		}
 		
 		return params;
+
 	}
 }
 

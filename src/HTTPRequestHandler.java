@@ -29,16 +29,22 @@ public class HTTPRequestHandler implements Runnable {
 			//Generate an http response
 			generateResponse();
 			
+
 			if (this.response == null) {
 				throw new ServerException(HTTPResponseCode.INTERNAL_ERROR);
 			}
 
+
 			//Send the response to client.
 			Utils.writeOutputStream(this.connection.getOutputStream(), this.response.toString());
-			
+
 			if (shouldAttachFile()) {
-				Utils.writeOutputStream(this.connection.getOutputStream(), this.response.fileContent);
-			}
+				//if (request.isChunked()){
+					//Utils.writeOutputStreamChunked(this.connection.getOutputStream(), this.getRequiredPath());
+				//}else{
+					Utils.writeOutputStream(this.connection.getOutputStream(), this.response.fileContent);
+				}
+			//}
 			
 			if (shouldAttachObject()) {
 				Utils.writeOutputStream(this.connection.getOutputStream(), this.response.getAttachedObject());
@@ -53,7 +59,7 @@ public class HTTPRequestHandler implements Runnable {
 			if (this.connection != null) {
 				try {
 					this.connection.close();
-				
+
 				} catch (IOException e) {
 					System.out.println("Could not close socket.");
 				}
@@ -63,7 +69,7 @@ public class HTTPRequestHandler implements Runnable {
 
 
 	private void generateResponse() throws IOException, ServerException {
-		
+
 		switch (this.request.type) {
 		case GET:
 		case HEAD:
@@ -84,11 +90,12 @@ public class HTTPRequestHandler implements Runnable {
 	private void handleTrace() {
 		response = new HTTPResponse(HTTPResponseCode.OK, getConnectionVersion());
 		String responseContent = request.originRequest;
-		
+
+
 		response.addHeader(Utils.HTTP_CONTENT_LENGTH_KEY, Integer.toString(responseContent.length()));
 		response.addHeader(Utils.HTTP_CONTENT_TYPE_KEY, Utils.HTTP_CONTENT_MESSAGE_TYPE);
 		response.attachFileContent(responseContent.getBytes());
-		
+
 		String connectionString = getConnectionHeaderValue();
 		response.addHeader(Utils.HTTP_CONNECTION_KEY, connectionString);
 	}
@@ -96,7 +103,7 @@ public class HTTPRequestHandler implements Runnable {
 
 	private void handleGetHeadPost() throws ServerException {
 		String fullPath = getRequiredPath();
-		
+
 		try {	
 			if (!Utils.isValidFile(fullPath)) {
 				throw new ServerException(HTTPResponseCode.NOT_FOUND);
@@ -104,9 +111,9 @@ public class HTTPRequestHandler implements Runnable {
 		} catch (SecurityException e) {
 			throw new ServerException(HTTPResponseCode.INTERNAL_ERROR);
 		}
-		
+
 		response = new HTTPResponse(HTTPResponseCode.OK, getConnectionVersion());
-		
+
 		FileType contentType = FileType.getTypeForFile(fullPath);
 		byte[] fileContent = contentType.isImage() ? Utils.readImageFile(fullPath) :
 			Utils.readFile(fullPath).getBytes();
@@ -117,25 +124,42 @@ public class HTTPRequestHandler implements Runnable {
 		}
 		
 
+		//if (!request.isChunked()){
+			response.addHeader(Utils.HTTP_CONTENT_LENGTH_KEY, Integer.toString(fileContent.length));
+		//}else{
+		//	response.addHeader(Utils.HTTP_TRANSFER_ENCODING, "chunked");	
+		//}
+
 		int contentLength = fileContent.length + response.getAttachedObject().length();
 		response.addHeader(Utils.HTTP_CONTENT_LENGTH_KEY, Integer.toString(contentLength));
+
 		response.addHeader(Utils.HTTP_CONTENT_TYPE_KEY, contentType.toString());
 		response.attachFileContent(fileContent);
 		
+		
+		
+		
+
 		String connectionString = getConnectionHeaderValue();
 		response.addHeader(Utils.HTTP_CONNECTION_KEY, connectionString);
 	}
 
 
 
+	private void handlePost() {
+		// TODO Auto-generated method stub
+
+	}
+
+
 	private void generateErrorResponse(HTTPResponseCode code) {
 		String version = getConnectionVersion();
 		response = new HTTPResponse(code, version);
-		
+
 		if (configuration.isErrorFileExists(code)) {
 			String errorFile = configuration.errorPages.get(code);
 			String errorFileFullPath = configuration.getFullPathForFile(errorFile);
-			
+
 			String fileContent = "";
 			try {
 				fileContent = Utils.readFile(errorFileFullPath);
@@ -143,19 +167,19 @@ public class HTTPRequestHandler implements Runnable {
 				//ignore the error in reading the file.
 				System.out.println("Error in reading error file: " + errorFile);
 			}
-			
+
 			FileType type = FileType.getTypeForFile(errorFile);
 			response.addHeader(Utils.HTTP_CONTENT_LENGTH_KEY, Integer.toString(fileContent.length()));
 			response.addHeader(Utils.HTTP_CONTENT_TYPE_KEY, type.toString());
 			response.attachFileContent(fileContent.getBytes());
 		}
-		
+
 		String connectionString = getConnectionHeaderValue();
 		response.addHeader(Utils.HTTP_CONNECTION_KEY, connectionString);
-		
+
 		try {
 			Utils.writeOutputStream(this.connection.getOutputStream(), response.toString());
-			
+
 			if (response.fileContent != null) {
 				Utils.writeOutputStream(connection.getOutputStream(), response.fileContent);
 			}
@@ -164,25 +188,26 @@ public class HTTPRequestHandler implements Runnable {
 			System.out.println("Error in sending error response");
 		}
 	}
-	
+
 	private String getConnectionHeaderValue() {
 		return  request == null || request.shouldCloseConnection() ? 
 				Utils.HTTP_CONNECTION_CLOSE : Utils.HTTP_CONNECTION_KEEP_ALIVE;
 	}
-	
+
 	private String getConnectionVersion() {
 		return this.request != null ? this.request.version : Utils.HTTP_TYPE_1_0;
 	}
-	
+
 	private String getRequiredPath() throws ServerException {
-		
+
 		if (request == null) {
 			throw new ServerException(HTTPResponseCode.INTERNAL_ERROR);
 		}
-		
+
 		return configuration.getFullPathForFile(request.path.isEmpty() ? configuration.defaultPage 
 				: request.path);
 	}
+
 	
 	private HashMap<String, String> getBodyObject()  {
 		return HTTPRequest.getParamsFromString(request.body);
