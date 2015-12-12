@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.net.Socket;
+import java.util.HashMap;
 
 
 public class HTTPRequestHandler implements Runnable {
@@ -28,7 +29,13 @@ public class HTTPRequestHandler implements Runnable {
 			//Generate an http response
 			generateResponse();
 			
+<<<<<<< HEAD
 			
+=======
+			if (this.response == null) {
+				throw new ServerException(HTTPResponseCode.INTERNAL_ERROR);
+			}
+>>>>>>> origin/master
 
 			//Send the response to client.
 			Utils.writeOutputStream(this.connection.getOutputStream(), this.response.toString());
@@ -40,6 +47,11 @@ public class HTTPRequestHandler implements Runnable {
 					Utils.writeOutputStream(this.connection.getOutputStream(), this.response.fileContent);
 				}
 			}
+			
+			if (shouldAttachObject()) {
+				Utils.writeOutputStream(this.connection.getOutputStream(), this.response.getAttachedObject());
+			}
+			
 
 		} catch (IOException e) {
 			generateErrorResponse(HTTPResponseCode.INTERNAL_ERROR);
@@ -57,22 +69,17 @@ public class HTTPRequestHandler implements Runnable {
 		}
 	}
 
-	private boolean shouldAttachFile() {
-		return request != null && request.type != HTTPRequestType.HEAD;
-	}
 
 	private void generateResponse() throws IOException, ServerException {
 
 		switch (this.request.type) {
 		case GET:
-		case HEAD: {
-			handleGetHead();
-			break;
-		}
+		case HEAD:
 		case POST: {
-			handlePost();
+			handleGetHeadPost();
 			break;
 		}
+
 		case TRACE: {
 			handleTrace();
 			break;
@@ -96,7 +103,7 @@ public class HTTPRequestHandler implements Runnable {
 	}
 
 
-	private void handleGetHead() throws ServerException {
+	private void handleGetHeadPost() throws ServerException {
 		String fullPath = getRequiredPath();
 
 		try {	
@@ -112,12 +119,23 @@ public class HTTPRequestHandler implements Runnable {
 		FileType contentType = FileType.getTypeForFile(fullPath);
 		byte[] fileContent = contentType.isImage() ? Utils.readImageFile(fullPath) :
 			Utils.readFile(fullPath).getBytes();
+		
+		if (request.type == HTTPRequestType.POST) {
+			HashMap<String, String> bodyObject = getBodyObject();
+			this.response.attachHashMapObject(bodyObject);
+		}
+		
 
+<<<<<<< HEAD
 		if (!request.isChunked()){
 			response.addHeader(Utils.HTTP_CONTENT_LENGTH_KEY, Integer.toString(fileContent.length));
 		}else{
 			response.addHeader(Utils.HTTP_TRANSFER_ENCODING, "chunked");	
 		}
+=======
+		int contentLength = fileContent.length + response.getAttachedObject().length();
+		response.addHeader(Utils.HTTP_CONTENT_LENGTH_KEY, Integer.toString(contentLength));
+>>>>>>> origin/master
 		response.addHeader(Utils.HTTP_CONTENT_TYPE_KEY, contentType.toString());
 		response.attachFileContent(fileContent);
 		
@@ -130,10 +148,13 @@ public class HTTPRequestHandler implements Runnable {
 	}
 
 
+<<<<<<< HEAD
 	private void handlePost() {
 		// TODO Auto-generated method stub
 
 	}
+=======
+>>>>>>> origin/master
 
 	private void generateErrorResponse(HTTPResponseCode code) {
 		String version = getConnectionVersion();
@@ -190,6 +211,21 @@ public class HTTPRequestHandler implements Runnable {
 		return configuration.getFullPathForFile(request.path.isEmpty() ? configuration.defaultPage 
 				: request.path);
 	}
+<<<<<<< HEAD
 
+=======
+	
+	private HashMap<String, String> getBodyObject()  {
+		return HTTPRequest.getParamsFromString(request.body);
+	}
+
+	private boolean shouldAttachFile() {
+		return request != null && request.type != HTTPRequestType.HEAD;
+	}
+	
+	private boolean shouldAttachObject() {
+		return response != null && response.attachedObject != null;
+	}
+>>>>>>> origin/master
 }
 

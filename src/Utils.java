@@ -54,7 +54,13 @@ public class Utils {
 	
 	public static final String HTTP_CONTENT_MESSAGE_TYPE = "message/http";
 	
+<<<<<<< HEAD
 	public static final String HTTP_TRANSFER_ENCODING = "transfer-encoding";
+=======
+	//parmas info file
+	public static final String parmsInfo= "params_info.html";
+	
+>>>>>>> origin/master
 
 
 	public static String readFile(String file) throws ServerException{
@@ -110,6 +116,12 @@ public class Utils {
 
 				line = inputStream.readLine();
 			}
+			builder.append(CRLF);
+			while(inputStream.ready()) {
+				builder.append((char) inputStream.read());
+			}
+			
+			
 		} catch (IOException e) {
 			throw new ServerException(HTTPResponseCode.INTERNAL_ERROR); 
 		}	
