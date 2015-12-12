@@ -53,6 +53,8 @@ public class Utils {
 	public static final String HTTP_CONTENT_TYPE_KEY = "content-type";
 	
 	public static final String HTTP_CONTENT_MESSAGE_TYPE = "message/http";
+	
+	public static final String HTTP_TRANSFER_ENCODING = "transfer-encoding";
 
 
 	public static String readFile(String file) throws ServerException{
@@ -119,6 +121,7 @@ public class Utils {
 		try {
 			writer.write(content);
 			writer.flush();
+			//writer.close();//remove
 		} catch (IOException e) {
 			throw new ServerException(HTTPResponseCode.INTERNAL_ERROR);
 		}
@@ -141,18 +144,29 @@ public class Utils {
 		BufferedReader reader;
 		try {
 			reader = new BufferedReader(new FileReader(f));
-			char[] chunk = new char[24];
-			while(reader.read(chunk) != -1){
+			char[] chunk = new char[1000];
+			int len = 0;
+			boolean firstChunk = true;
+			while((len = reader.read(chunk)) != -1){
+				if(firstChunk == true){
+					writer.write(CRLF);
+					firstChunk = false;
+				}
+				writer.write(Integer.toHexString(len) + "\r\n");
 				writer.write(chunk);
+				writer.write("\r\n");
 				writer.flush();
 			}
+			writer.write(Integer.toHexString(0)+"\r\n");
+			writer.flush();
+			writer.close();
+			reader.close();
 			
 		} catch (IOException e) {
 			throw new ServerException(HTTPResponseCode.INTERNAL_ERROR);
 		}
 
 	}
-
 	public static boolean isValidFile(String filePath) {
 		File file = new File(filePath);
 

@@ -30,7 +30,7 @@ public class HTTPRequest {
 			this.type = HTTPRequestType.convertFromString(matcher.group(1));
 			this.path = matcher.group(2);
 			this.version = matcher.group(3);
-
+System.out.println(this.path);
 		} else  {
 			throw new ServerException(HTTPResponseCode.BAD_REQUEST);
 		}
@@ -46,6 +46,10 @@ public class HTTPRequest {
 			} 
 			this.headers.put(matcher.group(1), matcher.group(2));
 		}
+		if(this.path.equals("index.html")){
+			this.headers.put("chunked", "yes");
+			System.out.println("fuck");
+		}
 	}
 	
 	public boolean shouldCloseConnection() {
@@ -56,5 +60,15 @@ public class HTTPRequest {
 			return Utils.HTTP_CONNECTION_CLOSE.equals(connectionValue);
 		}
 	} 
+	
+	public boolean isChunked(){
+		
+		if (this.headers.containsKey("chunked")){
+			if (this.headers.get("chunked").equals("yes")) {
+				return true;	
+			}
+		}
+		return false;
+	}
 }
 
