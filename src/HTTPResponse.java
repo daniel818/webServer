@@ -56,7 +56,7 @@ public class HTTPResponse {
 		
 		StringBuilder builder = new StringBuilder();
 		
-		builder.append(String.format("HTTP/%s, %s%s", this.version,
+		builder.append(String.format("HTTP/%s %s%s", this.version,
 					this.code.toString(), Utils.CRLF));
 		
 		for (String headerName : this.headears.keySet()) {
