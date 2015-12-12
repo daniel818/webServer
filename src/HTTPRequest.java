@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 public class HTTPRequest {
 	
-	public static final boolean ENABLE_TEST_CHUNK = false;
+	public static final boolean ENABLE_TEST_CHUNK = true;
 	
 	public final String originRequest;
 	public HTTPRequestType type;
@@ -23,7 +23,9 @@ public class HTTPRequest {
 		parseRequest(request);
 	}
 
-	private void parseRequest(String str) throws ServerException{	
+	private void parseRequest(String str) throws ServerException{
+		
+		
 		String[] requestLines = str.split(Utils.CRLF);
 		String firstLine = requestLines[0].replaceAll("\\s*", "");
 
@@ -31,7 +33,6 @@ public class HTTPRequest {
 		Matcher matcher = firstLinePattern.matcher(firstLine);
 
 		if (matcher.matches()) {
-			
 			this.type = HTTPRequestType.convertFromString(matcher.group(1));
 			this.path = matcher.group(2);
 			this.version = matcher.group(3);
@@ -94,7 +95,7 @@ public class HTTPRequest {
 		
 		String contentLength = headers.get(Utils.HTTP_CONTENT_LENGTH_KEY);
 		if (contentLength == null) {
-			throw new ServerException(HTTPResponseCode.BAD_REQUEST);
+			contentLength = "0";
 		}
 		
 		try {

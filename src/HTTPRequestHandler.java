@@ -46,6 +46,7 @@ public class HTTPRequestHandler implements Runnable {
 		} catch (IOException e) {
 			generateErrorResponse(HTTPResponseCode.INTERNAL_ERROR);
 		} catch (ServerException e) {
+			e.printStackTrace();
 			generateErrorResponse(e.code);
 		} finally {		
 			if (this.connection != null) {
@@ -73,6 +74,7 @@ public class HTTPRequestHandler implements Runnable {
 			break;
 		}
 		case NOT_SUPPORTED:
+			System.out.println("not supported");
 			throw new ServerException(HTTPResponseCode.NOT_IMPLEMENTEED);
 		}
 	}

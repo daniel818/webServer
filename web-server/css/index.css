@@ -1,5 +1,6 @@
 body {
 	background-color: #eee;
+	height: 100%;
 }
 
 .navbar {
@@ -28,7 +29,7 @@ body {
 
 .images-container .row img {
 	width: 18%;
-	height: 18%;
+	max-height: 200px;
 }
 
 hr {

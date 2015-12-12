@@ -10,9 +10,9 @@ public enum HTTPRequestType {
 				return GET;
 			case "POST":
 				return POST;
-			case "TRACE":
-				return HEAD;
 			case "HEAD":
+				return HEAD;
+			case "TRACE":
 				return TRACE;
 			default:
 				return NOT_SUPPORTED;

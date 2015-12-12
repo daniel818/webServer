@@ -1,3 +1,4 @@
+<!DOCTYPE HTML>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -41,7 +42,7 @@
 			var hiddenObject = $('input[name="hidden-object"]').val();
 			console.log(hiddenObject);
 			var jsonObject = JSON.parse(hiddenObject);
-			var isChecked = jsonObject["isChecked"] === undefined ? "" : jsonObject["isChecked"];
+			var isChecked = jsonObject["isChecked"] === undefined ? "off" : jsonObject["isChecked"];
 			var message = jsonObject["message"] === undefined ? "" : jsonObject["message"];
 
 			$("#message").text(message);
