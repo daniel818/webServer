@@ -54,9 +54,10 @@ public class Utils {
 	
 	public static final String HTTP_CONTENT_MESSAGE_TYPE = "message/http";
 	public static final String HTTP_TRANSFER_ENCODING = "transfer-encoding";
+	public static final String HTTP_CHUNKED_KEY = "chunked";
+	public static final String HTTP_CHUNKED_KEY_YES = "yes";
 
-
-	
+	public static final int CHUNKED_SIZE = 1024;
 
 
 
@@ -146,36 +147,30 @@ public class Utils {
 		}
 	}
 	
-//	public static void writeOutputStreamChunked(OutputStream out, String FilePath) throws ServerException {
-//		File f = new File(FilePath);
-//		
-//		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
-//		BufferedReader reader;
-//		try {
-//			reader = new BufferedReader(new FileReader(f));
-//			char[] chunk = new char[1000];
-//			int len = 0;
-//			boolean firstChunk = true;
-//			while((len = reader.read(chunk)) != -1){
-//				if(firstChunk == true){
-//					writer.write(CRLF);
-//					firstChunk = false;
-//				}
-//				writer.write(Integer.toHexString(len) + "\r\n");
-//				writer.write(chunk);
-//				writer.write("\r\n");
-//				writer.flush();
-//			}
-//			writer.write(Integer.toHexString(0)+"\r\n");
-//			writer.flush();
-//			writer.close();
-//			reader.close();
-//			
-//		} catch (IOException e) {
-//			throw new ServerException(HTTPResponseCode.INTERNAL_ERROR);
-//		}
-//
-//	}
+	public static void writeOutputStreamChunked(OutputStream out, byte[] FileContent) throws ServerException {
+		
+		try {
+			
+			int startChunk = 0;
+			while (startChunk <=  FileContent.length) {
+				int length = startChunk + CHUNKED_SIZE <= FileContent.length ? 
+						CHUNKED_SIZE : FileContent.length - startChunk;
+				String firstLine = String.format("%s%s", Integer.toHexString(length), CRLF);
+				out.write(firstLine.getBytes());
+				out.write(FileContent, startChunk, length);
+				out.write(CRLF.getBytes());
+				out.flush();
+				startChunk += length;
+			}
+			
+			out.close();
+			
+			
+		} catch (IOException e) {
+			throw new ServerException(HTTPResponseCode.INTERNAL_ERROR);
+		}
+
+	}
 	public static boolean isValidFile(String filePath) {
 		File file = new File(filePath);
 

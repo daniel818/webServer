@@ -5,6 +5,8 @@ import java.util.regex.Pattern;
 
 public class HTTPRequest {
 	
+	public static final boolean ENABLE_TEST_CHUNK = true;
+	
 	public final String originRequest;
 	public HTTPRequestType type;
 	public String path;
@@ -12,6 +14,7 @@ public class HTTPRequest {
 	public HashMap<String, String> UrlParams;
 	private HashMap<String, String> headers;
 	public String body;
+	
 
 	public HTTPRequest(String request)  throws ServerException{
 		originRequest = request;
@@ -60,10 +63,11 @@ System.out.println(this.path);
 		if (this.type == HTTPRequestType.GET || this.type == HTTPRequestType.HEAD) {
 			parseURLParams();
 		}
-		if(this.path.equals("index.html")){
-			this.headers.put("chunked", "yes");
-			System.out.println("fuck");
+		
+		if (ENABLE_TEST_CHUNK) {
+			headers.put(Utils.HTTP_CHUNKED_KEY, Utils.HTTP_CHUNKED_KEY_YES);
 		}
+
 	}
 	
 	private void parseURLParams() throws ServerException {
@@ -115,14 +119,8 @@ System.out.println(this.path);
 		}
 	} 
 	
-	public boolean isChunked(){
-		
-		if (this.headers.containsKey("chunked")){
-			if (this.headers.get("chunked").equals("yes")) {
-				return true;	
-			}
-		}
-		return false;
+	public boolean isChunked(){	
+		return Utils.HTTP_CHUNKED_KEY_YES.equals(headers.get(Utils.HTTP_CHUNKED_KEY));
 	}
 
 	public static HashMap<String, String> getParamsFromString(String str) {

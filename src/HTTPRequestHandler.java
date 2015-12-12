@@ -39,12 +39,8 @@ public class HTTPRequestHandler implements Runnable {
 			Utils.writeOutputStream(this.connection.getOutputStream(), this.response.toString());
 
 			if (shouldAttachFile()) {
-				//if (request.isChunked()){
-					//Utils.writeOutputStreamChunked(this.connection.getOutputStream(), this.getRequiredPath());
-				//}else{
-					Utils.writeOutputStream(this.connection.getOutputStream(), this.response.fileContent);
-				}
-			//}
+				writeAttachedFile();
+			}
 			
 			if (shouldAttachObject()) {
 				Utils.writeOutputStream(this.connection.getOutputStream(), this.response.getAttachedObject());
@@ -124,11 +120,11 @@ public class HTTPRequestHandler implements Runnable {
 		}
 		
 
-		//if (!request.isChunked()){
-			response.addHeader(Utils.HTTP_CONTENT_LENGTH_KEY, Integer.toString(fileContent.length));
-		//}else{
-		//	response.addHeader(Utils.HTTP_TRANSFER_ENCODING, "chunked");	
-		//}
+		if (request.isChunked()){
+			response.addHeader(Utils.HTTP_TRANSFER_ENCODING, Utils.HTTP_CHUNKED_KEY);
+		}else{
+			response.addHeader(Utils.HTTP_CONTENT_LENGTH_KEY, Integer.toString(fileContent.length));	
+		}
 
 		int contentLength = fileContent.length + response.getAttachedObject().length();
 		response.addHeader(Utils.HTTP_CONTENT_LENGTH_KEY, Integer.toString(contentLength));
@@ -219,6 +215,14 @@ public class HTTPRequestHandler implements Runnable {
 	
 	private boolean shouldAttachObject() {
 		return response != null && response.attachedObject != null;
+	}
+	
+	private void writeAttachedFile() throws ServerException, IOException {
+		if (request.isChunked()){
+			Utils.writeOutputStreamChunked(this.connection.getOutputStream(), this.response.fileContent);
+		}else{
+			Utils.writeOutputStream(this.connection.getOutputStream(), this.response.fileContent);
+		}
 	}
 }
 
