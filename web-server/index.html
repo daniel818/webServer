@@ -16,10 +16,10 @@
 	      </a>
 	    </div>
 	    <ul class="nav navbar-nav">
-	    	<li><a href="#">Last Image</a></li>
-	    	<li><a href="#">Last Form</a></li>
-	    	<li><a href="#">Course Website</a></li>
-	    	<li><a href="#">Favorite Website</a></li>
+	    	<li><a href="#lastImage">Last Image</a></li>
+	    	<li><a href="#form">Last Form</a></li>
+	    	<li><a href="http://moodle.idc.ac.il/course/view.php?id=22816">Course Website</a></li>
+	    	<li><a href="https://www.facebook.com/">Favorite Website</a></li>
 	    </ul>
 	  </div>
 	</nav>
@@ -53,7 +53,9 @@
 
 	<!-- Form -->
 	<div class="container form-container">
-		<form class="form" method="GET" action="params_info.html">
+	<a name="form">
+
+		<form class="form" method="POST" action="params_info.html">
 			 <div class="form-group message-container">
 			 	<label for="message" class="col-sm-1 control-label"><h4>Message</h4></label>
 			    <div class="col-sm-11">
@@ -64,7 +66,7 @@
 			    <div class="col-sm-offset-1 col-sm-11">
 			      <div class="checkbox">
 			        <label>
-			          <input type="checkbox" name="checked" value""> Check me out
+			          <input type="checkbox" name="isChecked" value""> Check me out
 			        </label>
 			      </div>
 			    </div>
@@ -76,15 +78,18 @@
   			</div>
 		</form>
 		<hr>
+		</a>
 	</div>
 
 	<!-- Last Image  -->
 	<div class="container last-image-container">
+		<a name="lastImage">
 		<div class="row">
 			<div class="center-block">
 				<img src="img/friendlies.jpeg" alt="..." class="img-thumbnail img-responsive center-block" id="lastImage">
 			</div>
 		</div>
+		</a>
 	</div>
 
 	

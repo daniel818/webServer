@@ -9,9 +9,9 @@ public class HTTPRequest {
 	public HTTPRequestType type;
 	public String path;
 	public String version;
-	private HashMap<String, String> UrlParams;
+	public HashMap<String, String> UrlParams;
 	private HashMap<String, String> headers;
-	private String body;
+	public String body;
 
 	public HTTPRequest(String request)  throws ServerException{
 		originRequest = request;
@@ -48,7 +48,7 @@ public class HTTPRequest {
 				throw new ServerException(HTTPResponseCode.BAD_REQUEST); 
 			} 
 			this.headers.put(matcher.group(1).toLowerCase().trim(),
-					matcher.group(2).toLowerCase().trim());
+					matcher.group(2).trim());
 			i++;
 		}
 		
@@ -57,25 +57,20 @@ public class HTTPRequest {
 			parseBody(i, requestLines);
 		}
 		
-		if (this.type == HTTPRequestType.GET) {
-			parseGetParams();
+		if (this.type == HTTPRequestType.GET || this.type == HTTPRequestType.HEAD) {
+			parseURLParams();
 		}
 	}
 	
-	private void parseGetParams() throws ServerException {
+	private void parseURLParams() throws ServerException {
 		
 		String[] Urlparts = this.path.split("\\?");
 		this.path = Urlparts[0];
 		
 		if (Urlparts.length > 1) {
-			String[] paramsParts = Urlparts[1].split("&");
-			for (int  i = 0; i < paramsParts.length; i++) {
-				String[] keyValue = paramsParts[i].split("=");
-				if (keyValue.length != 2) {
-					throw new ServerException(HTTPResponseCode.BAD_REQUEST);
-				}
-				
-				UrlParams.put(keyValue[0], keyValue[1]);		
+			UrlParams = getParamsFromString(Urlparts[1]);
+			if (UrlParams == null) {
+				throw new ServerException(HTTPResponseCode.BAD_REQUEST);
 			}
 		}
 	}
@@ -107,6 +102,7 @@ public class HTTPRequest {
 	}
 
 	public boolean shouldCloseConnection() {
+
 		String connectionValue = this.headers.get(Utils.HTTP_CONNECTION_KEY);
 		if (this.version.equals(Utils.HTTP_TYPE_1_0)) {
 			return !Utils.HTTP_CONNECTION_KEEP_ALIVE.equals(connectionValue);
@@ -114,5 +110,21 @@ public class HTTPRequest {
 			return Utils.HTTP_CONNECTION_CLOSE.equals(connectionValue);
 		}
 	} 
+	
+	public static HashMap<String, String> getParamsFromString(String str) {
+		HashMap<String, String> params = new HashMap<>();
+		String[] paramsParts = str.split("&");
+		for (int  i = 0; i < paramsParts.length; i++) {
+			String[] keyValue = paramsParts[i].split("=");
+			if (keyValue.length != 2) {
+				return null;
+			}
+			
+			params.put(keyValue[0], keyValue[1]);
+		}
+		
+		return params;
+	}
 }
+
 
