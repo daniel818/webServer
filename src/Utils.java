@@ -53,8 +53,7 @@ public class Utils {
 	
 	public static final String HTTP_CONTENT_MESSAGE_TYPE = "message/http";
 	
-	//parmas info file
-	public static final String parmsInfo= "params_info.html";
+	
 	
 
 
