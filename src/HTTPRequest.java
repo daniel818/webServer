@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 public class HTTPRequest {
 	
-	public static final boolean ENABLE_TEST_CHUNK = false;
+	public static final boolean ENABLE_TEST_CHUNK = true;
 	
 	public final String originRequest;
 	public HTTPRequestType type;

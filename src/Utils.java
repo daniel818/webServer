@@ -151,26 +151,30 @@ public class Utils {
 		try {
 			
 			int startChunk = 0;
-			while (startChunk <  FileContent.length) {
+			while (startChunk <=  FileContent.length) {
 				int length = startChunk + CHUNKED_SIZE <= FileContent.length ? 
 						CHUNKED_SIZE : FileContent.length - startChunk;
-				if (length == 0) {
-					break;
-				}
 				
 				String firstLine = String.format("%s%s", Integer.toHexString(length), CRLF);
 				out.write(firstLine.getBytes());
 				out.write(FileContent, startChunk, length);
 				out.write(CRLF.getBytes());
 				out.flush();
+				
+				if (length == 0) {
+					break;
+				}
+				
 				startChunk += length;
 			}
 			
 			
 		} catch (IOException e) {
+			e.printStackTrace();
 			throw new ServerException(HTTPResponseCode.INTERNAL_ERROR);
 		} 
 	}
+	
 	public static boolean isValidFile(String filePath) {
 		File file = new File(filePath);
 
@@ -179,4 +183,21 @@ public class Utils {
 		}
 		return true;
 	}	
+
+	public static byte[] combinedArrays(byte[] a, byte[] b) {
+		byte[] result = new byte[a.length + b.length];
+		int i = 0;
+		while (i < a.length) {
+			result[i] = a[i];
+			i++;
+		}
+		
+		int j = 0;
+		while (j < b.length) {
+			result[i + j] = b[j];
+			j++;
+		}
+		
+		return result;
+	}
 }
