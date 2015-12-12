@@ -107,6 +107,12 @@ public class Utils {
 
 				line = inputStream.readLine();
 			}
+			builder.append(CRLF);
+			while(inputStream.ready()) {
+				builder.append((char) inputStream.read());
+			}
+			
+			
 		} catch (IOException e) {
 			throw new ServerException(HTTPResponseCode.INTERNAL_ERROR); 
 		}	

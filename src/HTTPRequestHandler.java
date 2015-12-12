@@ -27,6 +27,10 @@ public class HTTPRequestHandler implements Runnable {
 
 			//Generate an http response
 			generateResponse();
+			
+			if (this.response == null) {
+				throw new ServerException(HTTPResponseCode.INTERNAL_ERROR);
+			}
 
 			//Send the response to client.
 			Utils.writeOutputStream(this.connection.getOutputStream(), this.response.toString());
