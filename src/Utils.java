@@ -39,8 +39,7 @@ public class Utils {
 	public static final String FILE_SEPERATOR = File.separator;
 	public static final String CONFIG_INI = "config.ini";
 	public static final String WORKING_DIR = System.getProperty("user.dir");
-	private static final CharSequence PNG_EXTENSION = ".png";
-	private static final CharSequence ICO_EXTENSION = ".ico";
+
 	
 	//HTTP protocol constants
 	public static final String HTTP_TYPE_1_0 = "1.0";
@@ -91,7 +90,13 @@ public class Utils {
 	public static byte[] readImageFile(String file) throws ServerException {
 		
 		if (FileType.getTypeForFile(file) == FileType.ico) {
-			file = file.replace(ICO_EXTENSION, PNG_EXTENSION);
+			try {
+				System.out.println("here");
+				return Files.readAllBytes(new File(file).toPath());
+			} catch (Exception e) {
+				throw new ServerException(HTTPResponseCode.INTERNAL_ERROR);
+			}
+			
 		}
 		
 		BufferedImage originalImage;
