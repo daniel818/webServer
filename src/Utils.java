@@ -91,7 +91,6 @@ public class Utils {
 		
 		if (FileType.getTypeForFile(file) == FileType.ico) {
 			try {
-				System.out.println("here");
 				return Files.readAllBytes(new File(file).toPath());
 			} catch (Exception e) {
 				throw new ServerException(HTTPResponseCode.INTERNAL_ERROR);

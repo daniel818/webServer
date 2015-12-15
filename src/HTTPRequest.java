@@ -25,6 +25,9 @@ public class HTTPRequest {
 
 	private void parseRequest(String str) throws ServerException{
 		
+		if (str == null) {
+			return;
+		}
 		
 		String[] requestLines = str.split(Utils.CRLF);
 		String firstLine = requestLines[0].replaceAll("\\s*", "");
@@ -124,6 +127,10 @@ public class HTTPRequest {
 
 	public static HashMap<String, String> getParamsFromString(String str) {
 		HashMap<String, String> params = new HashMap<>();
+		if (str == null) {
+			return params;
+		}
+		
 		String[] paramsParts = str.split("&");
 		for (int  i = 0; i < paramsParts.length; i++) {
 			String[] keyValue = paramsParts[i].split("=");

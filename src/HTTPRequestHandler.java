@@ -24,6 +24,9 @@ public class HTTPRequestHandler implements Runnable {
 
 			//Parse the message
 			request = new HTTPRequest(bufferContent);
+			if (request == null) {
+				return;
+			}
 
 			//Generate an http response
 			generateResponse();
@@ -113,7 +116,7 @@ public class HTTPRequestHandler implements Runnable {
 		FileType contentType = FileType.getTypeForFile(fullPath);
 		
 		byte[] fileContent = null;
-		if (request.type == HTTPRequestType.POST) {
+		if (contentType == FileType.html) {
 			HashMap<String, String> bodyObject = getBodyObject();
 			HtmlGenerator generator = new HtmlGenerator(bodyObject, fullPath);
 			fileContent = generator.generate();
