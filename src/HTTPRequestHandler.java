@@ -49,7 +49,6 @@ public class HTTPRequestHandler implements Runnable {
 		} catch (IOException e) {
 			generateErrorResponse(HTTPResponseCode.INTERNAL_ERROR);
 		} catch (ServerException e) {
-			e.printStackTrace();
 			generateErrorResponse(e.code);
 		} finally {		
 			if (this.connection != null) {
