@@ -199,21 +199,4 @@ public class Utils {
 		}
 		return true;
 	}	
-
-	public static byte[] combinedArrays(byte[] a, byte[] b) {
-		byte[] result = new byte[a.length + b.length];
-		int i = 0;
-		while (i < a.length) {
-			result[i] = a[i];
-			i++;
-		}
-		
-		int j = 0;
-		while (j < b.length) {
-			result[i + j] = b[j];
-			j++;
-		}
-		
-		return result;
-	}
 }

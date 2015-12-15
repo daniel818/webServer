@@ -23,33 +23,16 @@
 			<div class="panel panel-default">
 			  <div class="panel-heading">Message</div>
 			  <div class="panel-body" id="message">
-			    
+			    @{message}
 			  </div>
 			</div>
 			<div class="panel panel-default">
 			  <div class="panel-heading">isChecked</div>
 			  <div class="panel-body" id="isChecked">
-			   
+			   	@{isChecked}
 			  </div>
 			</div>
 		</div>
-		<div class="row"></div>
 	</div>
-	<script type="text/javascript">
-
-		$(document).ready(function() {
-
-			var hiddenObject = $('input[name="hidden-object"]').val();
-			console.log(hiddenObject);
-			var jsonObject = JSON.parse(hiddenObject);
-			var isChecked = jsonObject["isChecked"] === undefined ? "off" : jsonObject["isChecked"];
-			var message = jsonObject["message"] === undefined ? "" : jsonObject["message"];
-
-			$("#message").html(message.replace("+", "&nbsp;"));
-			$("#isChecked").html(isChecked);
-
-		})
-
-	</script>
 </body>
 </html>

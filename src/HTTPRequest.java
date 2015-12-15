@@ -128,7 +128,7 @@ public class HTTPRequest {
 		for (int  i = 0; i < paramsParts.length; i++) {
 			String[] keyValue = paramsParts[i].split("=");
 			if (keyValue.length != 2) {
-				return null;
+				return params;
 			}
 			
 			params.put(keyValue[0], keyValue[1]);

@@ -111,19 +111,22 @@ public class HTTPRequestHandler implements Runnable {
 		response = new HTTPResponse(HTTPResponseCode.OK, getConnectionVersion());
 
 		FileType contentType = FileType.getTypeForFile(fullPath);
-		byte[] fileContent = contentType.isImage() ? Utils.readImageFile(fullPath) :
-			Utils.readFile(fullPath).getBytes();
 		
+		byte[] fileContent = null;
 		if (request.type == HTTPRequestType.POST) {
 			HashMap<String, String> bodyObject = getBodyObject();
-			this.response.attachHashMapObject(bodyObject);
+			HtmlGenerator generator = new HtmlGenerator(bodyObject, fullPath);
+			fileContent = generator.generate();
+		} else {
+			fileContent = contentType.isImage() ? Utils.readImageFile(fullPath) :
+				Utils.readFile(fullPath).getBytes();
 		}
 		
 
 		if (request.isChunked()){
 			response.addHeader(Utils.HTTP_TRANSFER_ENCODING, Utils.HTTP_CHUNKED_KEY);
 		}else{
-			int contentLength = fileContent.length + response.getAttachedObject().length();
+			int contentLength = fileContent.length;
 			response.addHeader(Utils.HTTP_CONTENT_LENGTH_KEY, Integer.toString(contentLength));	
 		}
 
@@ -206,12 +209,10 @@ public class HTTPRequestHandler implements Runnable {
 	}
 	
 	private void writeAttachedFile() throws ServerException, IOException {
-		byte[] result = Utils.combinedArrays(this.response.fileContent,
-				this.response.getAttachedObject().getBytes());
 		if (request.isChunked()) {
-			Utils.writeOutputStreamChunked(this.connection.getOutputStream(), result);
+			Utils.writeOutputStreamChunked(this.connection.getOutputStream(), response.fileContent);
 		}else{
-			Utils.writeOutputStream(this.connection.getOutputStream(), result);
+			Utils.writeOutputStream(this.connection.getOutputStream(), response.fileContent);
 		}
 	}
 	

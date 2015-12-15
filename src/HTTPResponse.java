@@ -8,7 +8,6 @@ public class HTTPResponse {
 	private HashMap<String, String> headears;
 	private String version;
 	public byte[] fileContent;
-	public HashMap<String, String> attachedObject;
 	
 	
 	public HTTPResponse(HTTPResponseCode code, String version) {
@@ -26,31 +25,6 @@ public class HTTPResponse {
 		this.fileContent = fileContent;
 	}
 	
-	public void attachHashMapObject(HashMap<String, String> object) {
-		this.attachedObject = object;
-	}
-	
-	public String getAttachedObject() {
-		if (attachedObject == null) {
-			return "";
-		}
-		
-		StringBuilder builder = new StringBuilder();
-		builder.append("<input type='hidden' name='hidden-object' value='");
-		builder.append("{");
-		
-		Object[] keys = attachedObject.keySet().toArray();
-		for (int i = 0; i < keys.length - 1; i++) {
-			builder.append(String.format("\"%s\" : \"%s\",", keys[i], attachedObject.get(keys[i])));
-		}
-		
-		
-		Object lastKey = keys[keys.length - 1];
-		builder.append(String.format("\"%s\" : \"%s\"", lastKey, attachedObject.get(lastKey)));
-		
-		builder.append("}'/>");
-		return builder.toString();
-	}
 	
 	public String toString() {
 		
