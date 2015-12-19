@@ -29,7 +29,8 @@ public class ThreadPool implements Executor {
 							if(r != null){
 								r.run();
 							}
-						} catch (InterruptedException e) {
+						} catch (Exception  e) {
+							System.out.println("Could not handle request, message: " + e.getMessage());
 						}	
 					}
 				}
@@ -44,7 +45,8 @@ public class ThreadPool implements Executor {
 	public void execute(Runnable command) {
 		try {
 			executionQ.push(command);
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
+			System.out.println("Could not push to queue, message: " + e.getMessage());
 		}
 	}
 

@@ -25,7 +25,7 @@ public class HTTPRequest {
 
 	private void parseRequest(String str) throws ServerException{
 		
-		if (str == null) {
+		if (str == null || str.isEmpty()) {
 			return;
 		}
 		
@@ -134,11 +134,13 @@ public class HTTPRequest {
 		String[] paramsParts = str.split("&");
 		for (int  i = 0; i < paramsParts.length; i++) {
 			String[] keyValue = paramsParts[i].split("=");
-			if (keyValue.length != 2) {
+			if (keyValue.length == 1) {
+				params.put(keyValue[0], "");
+			} else if (keyValue.length == 2) {
+				params.put(keyValue[0], keyValue[1]);
+			} else {
 				return params;
 			}
-			
-			params.put(keyValue[0], keyValue[1]);
 		}
 		
 		return params;
