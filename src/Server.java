@@ -7,7 +7,7 @@ import java.util.concurrent.RejectedExecutionException;
 
 public class Server {
 	
-	static final int MAX_THREADS = 10;
+	public static final int MAX_THREADS = 10;
 
 	public static void main(String[] args) throws IOException  {
 		
@@ -24,11 +24,12 @@ public class Server {
 			}
 		} catch (SecurityException e) {
 			System.out.println("Error in creating server: Please check the config.ini file");
+			return;
 		}			
 		
 		//Create and start the handlers pool.
-		//Executor executor = Executors.newFixedThreadPool(configuration.maxThreads);
-		Executor executor = new ThreadPool(configuration.maxThreads); 
+		int maxThreads = configuration.maxThreads > MAX_THREADS ? MAX_THREADS : configuration.maxThreads;
+		Executor executor = new ThreadPool(maxThreads); 
 		
 		//Create the Listener and start Listen to requests.
 		HTTPListener listener = new HTTPListener(configuration, executor);

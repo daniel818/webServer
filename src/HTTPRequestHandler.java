@@ -27,6 +27,7 @@ public class HTTPRequestHandler implements Runnable {
 			if (request == null) {
 				return;
 			}
+			System.out.println(String.format("Received Request:\n%s", request.originRequest));
 
 			//Generate an http response
 			generateResponse();
@@ -39,6 +40,7 @@ public class HTTPRequestHandler implements Runnable {
 
 			//Send the response to client.
 			Utils.writeOutputStream(this.connection.getOutputStream(), this.response.toString());
+			System.out.println(String.format("Sent Response:\n%s", this.response));
 			
 
 			if (shouldAttachFile()) {
@@ -172,6 +174,7 @@ public class HTTPRequestHandler implements Runnable {
 
 		try {
 			Utils.writeOutputStream(this.connection.getOutputStream(), response.toString());
+			System.out.println(String.format("Sent Response:\n%s", this.response));
 
 			if (response.fileContent != null) {
 				Utils.writeOutputStream(connection.getOutputStream(), response.fileContent);

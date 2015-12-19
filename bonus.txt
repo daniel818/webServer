@@ -1,0 +1,21 @@
+Bonus Features:
+
+1. Html Error pages for each error. The error pages are designed like every modern web server. 
+2. Extending the config.ini file that gives the user the ability to custom the default error pages.
+	for doing so the user should do the following: 
+	1. Create error pages under the root directory (can be also under directories inside the root)
+	2. In the config file add the following fields in the exact order (the order matter but no file is mandatory) : 
+		bad-request= [file path]
+		not-found= [file path]
+		internal= [file path]
+		not-implemented= [file path]
+
+3. Dynamic html generator for post request only (can be extended easily to support also get requests).
+	the Generator works that way: 
+		1. Assuming the post request contains field with name "message" and value "my message". 
+		2. Assuming the developer of the html would like to get the value of the message in a div element.
+		3. The developer should add <div>@{message}</div>
+		4. Then when generating the html the server will change the value of the div to the value of the messsage.
+		5. The result html will be: <div>my message</div>
+
+
